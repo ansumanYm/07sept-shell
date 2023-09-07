@@ -66,7 +66,7 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> SELECTspecificcolumns",
 				"Onlycomedy filter(toFloat({Rotten Tomatoes %}) > 75) ~> Rottentomatos",
-				"moviesdatasource filter(toFloat(replace({Worldwide Gross}, '$', '')) > 50) ~> WorldwideGross",
+				"moviesdatasource filter(toFloat(replace({Worldwide Gross}, '$', '')) > 100) ~> WorldwideGross",
 				"WorldwideGross derive() ~> derivedColumn1",
 				"SELECTspecificcolumns sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
