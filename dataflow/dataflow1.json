@@ -3,11 +3,55 @@
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
-			"sources": [],
-			"sinks": [],
-			"transformations": [],
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DSInput",
+						"type": "DatasetReference"
+					},
+					"name": "moviesdatasource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DSOutput",
+						"type": "DatasetReference"
+					},
+					"name": "moviesdatasink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Moviesbetween2007and2009"
+				},
+				{
+					"name": "Onlycomedy"
+				}
+			],
 			"scriptLines": [
-				""
+				"source(output(",
+				"          Film as string,",
+				"          Genre as string,",
+				"          {Lead Studio} as string,",
+				"          {Audience score %} as string,",
+				"          Profitability as string,",
+				"          {Rotten Tomatoes %} as string,",
+				"          {Worldwide Gross} as string,",
+				"          Year as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> moviesdatasource",
+				"moviesdatasource filter(toInteger(Year) >= 2007 && toInteger(Year) <=2009) ~> Moviesbetween2007and2009",
+				"Moviesbetween2007and2009 filter(toString(Genre) == 'Comedy') ~> Onlycomedy",
+				"Onlycomedy sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> moviesdatasink"
 			]
 		}
 	}
