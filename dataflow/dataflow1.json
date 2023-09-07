@@ -29,9 +29,6 @@
 					"name": "Onlycomedy"
 				},
 				{
-					"name": "SELECTspecificcolumns"
-				},
-				{
 					"name": "Rottentomatos"
 				},
 				{
@@ -60,19 +57,11 @@
 				"     ignoreNoFilesFound: false) ~> moviesdatasource",
 				"Gross2 filter(toInteger(Year) >= 2007 && toInteger(Year) <=2009) ~> Moviesbetween2007and2009",
 				"Moviesbetween2007and2009 filter(in(array('Romance', 'Comedy'), Genre)) ~> Onlycomedy",
-				"Rottentomatos select(mapColumn(",
-				"          Film,",
-				"          Genre,",
-				"          {Rotten Tomatoes %},",
-				"          Year",
-				"     ),",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> SELECTspecificcolumns",
 				"Onlycomedy filter(toFloat({Rotten Tomatoes %}) > 75) ~> Rottentomatos",
 				"moviesdatasource derive({Total Gross} = iif(toFloat(replace({Worldwide Gross}, '$', '')) > 200, 'Super hit', iif(toFloat(replace({Worldwide Gross}, '$', '')) > 50, 'Hit', 'Flop'))) ~> Gross",
 				"Gross filter({Total Gross} == 'Super hit') ~> Superhits",
 				"moviesdatasource derive({Total Gross} = iif(toFloat(replace({Worldwide Gross}, '$', '')) > 200, 'Super hit', iif(toFloat(replace({Worldwide Gross}, '$', '')) > 50, 'Hit', 'Flop'))) ~> Gross2",
-				"SELECTspecificcolumns sink(allowSchemaDrift: true,",
+				"Rottentomatos sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     umask: 0022,",
 				"     preCommands: [],",
