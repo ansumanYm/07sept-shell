@@ -18,7 +18,7 @@
 						"referenceName": "DSOutput",
 						"type": "DatasetReference"
 					},
-					"name": "moviesdatasink"
+					"name": "Uniontablesink"
 				}
 			],
 			"transformations": [
@@ -39,6 +39,9 @@
 				},
 				{
 					"name": "Gross2"
+				},
+				{
+					"name": "union1"
 				}
 			],
 			"scriptLines": [
@@ -61,13 +64,14 @@
 				"moviesdatasource derive({Total Gross} = iif(toFloat(replace({Worldwide Gross}, '$', '')) > 200, 'Super hit', iif(toFloat(replace({Worldwide Gross}, '$', '')) > 50, 'Hit', 'Flop'))) ~> Gross",
 				"Gross filter({Total Gross} == 'Super hit') ~> Superhits",
 				"moviesdatasource derive({Total Gross} = iif(toFloat(replace({Worldwide Gross}, '$', '')) > 200, 'Super hit', iif(toFloat(replace({Worldwide Gross}, '$', '')) > 50, 'Hit', 'Flop'))) ~> Gross2",
-				"Rottentomatos sink(allowSchemaDrift: true,",
+				"Superhits, Rottentomatos union(byName: true)~> union1",
+				"union1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> moviesdatasink"
+				"     skipDuplicateMapOutputs: true) ~> Uniontablesink"
 			]
 		}
 	}
