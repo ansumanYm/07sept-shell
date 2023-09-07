@@ -147,7 +147,7 @@
 								"referenceName": "DSOutput",
 								"type": "DatasetReference"
 							},
-							"name": "moviesdatasink"
+							"name": "Uniontablesink"
 						}
 					],
 					"transformations": [
@@ -158,13 +158,19 @@
 							"name": "Onlycomedy"
 						},
 						{
-							"name": "SELECTspecificcolumns"
-						},
-						{
 							"name": "Rottentomatos"
 						},
 						{
-							"name": "WorldwideGross"
+							"name": "Gross"
+						},
+						{
+							"name": "Superhits"
+						},
+						{
+							"name": "Gross2"
+						},
+						{
+							"name": "union1"
 						}
 					],
 					"scriptLines": [
@@ -181,25 +187,20 @@
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false) ~> moviesdatasource",
-						"moviesdatasource filter(toInteger(Year) >= 2007 && toInteger(Year) <=2009) ~> Moviesbetween2007and2009",
+						"Gross2 filter(toInteger(Year) >= 2007 && toInteger(Year) <=2009) ~> Moviesbetween2007and2009",
 						"Moviesbetween2007and2009 filter(in(array('Romance', 'Comedy'), Genre)) ~> Onlycomedy",
-						"Rottentomatos select(mapColumn(",
-						"          Film,",
-						"          Genre,",
-						"          {Rotten Tomatoes %},",
-						"          Year",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> SELECTspecificcolumns",
 						"Onlycomedy filter(toFloat({Rotten Tomatoes %}) > 75) ~> Rottentomatos",
-						"moviesdatasource filter(toFloat(replace({Worldwide Gross}, '$', '')) > 100) ~> WorldwideGross",
-						"SELECTspecificcolumns sink(allowSchemaDrift: true,",
+						"moviesdatasource derive({Total Gross} = iif(toFloat(replace({Worldwide Gross}, '$', '')) > 200, 'Super hit', iif(toFloat(replace({Worldwide Gross}, '$', '')) > 50, 'Hit', 'Flop'))) ~> Gross",
+						"Gross filter({Total Gross} == 'Super hit') ~> Superhits",
+						"moviesdatasource derive({Total Gross} = iif(toFloat(replace({Worldwide Gross}, '$', '')) > 200, 'Super hit', iif(toFloat(replace({Worldwide Gross}, '$', '')) > 50, 'Hit', 'Flop'))) ~> Gross2",
+						"Superhits, Rottentomatos union(byName: true)~> union1",
+						"union1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     umask: 0022,",
 						"     preCommands: [],",
 						"     postCommands: [],",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> moviesdatasink"
+						"     skipDuplicateMapOutputs: true) ~> Uniontablesink"
 					]
 				}
 			},
@@ -233,7 +234,7 @@
 								"parameters": {},
 								"datasetParameters": {
 									"moviesdatasource": {},
-									"moviesdatasink": {}
+									"Uniontablesink": {}
 								}
 							},
 							"staging": {},
