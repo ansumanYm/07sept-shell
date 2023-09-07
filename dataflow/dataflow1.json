@@ -44,7 +44,7 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> moviesdatasource",
 				"moviesdatasource filter(toInteger(Year) >= 2007 && toInteger(Year) <=2009) ~> Moviesbetween2007and2009",
-				"Moviesbetween2007and2009 filter(toString(Genre) == 'Comedy') ~> Onlycomedy",
+				"Moviesbetween2007and2009 filter(in(array('Romance', 'Comedy'), Genre)) ~> Onlycomedy",
 				"Onlycomedy sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     umask: 0022,",
