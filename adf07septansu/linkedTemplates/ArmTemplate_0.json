@@ -119,7 +119,44 @@
 					"firstRowAsHeader": true,
 					"quoteChar": "\""
 				},
-				"schema": []
+				"schema": [
+					{
+						"name": "Film",
+						"type": "String"
+					},
+					{
+						"name": "Genre",
+						"type": "String"
+					},
+					{
+						"name": "Lead Studio",
+						"type": "String"
+					},
+					{
+						"name": "Audience score %",
+						"type": "String"
+					},
+					{
+						"name": "Profitability",
+						"type": "String"
+					},
+					{
+						"name": "Rotten Tomatoes %",
+						"type": "String"
+					},
+					{
+						"name": "Worldwide Gross",
+						"type": "String"
+					},
+					{
+						"name": "Year",
+						"type": "String"
+					},
+					{
+						"name": "Total Gross",
+						"type": "String"
+					}
+				]
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/azdatalake')]"
@@ -196,6 +233,17 @@
 						"Superhits, Rottentomatos union(byName: true)~> union1",
 						"union1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
+						"     input(",
+						"          Film as string,",
+						"          Genre as string,",
+						"          {Lead Studio} as string,",
+						"          {Audience score %} as string,",
+						"          Profitability as string,",
+						"          {Rotten Tomatoes %} as string,",
+						"          {Worldwide Gross} as string,",
+						"          Year as string,",
+						"          {Total Gross} as string",
+						"     ),",
 						"     umask: 0022,",
 						"     preCommands: [],",
 						"     postCommands: [],",
