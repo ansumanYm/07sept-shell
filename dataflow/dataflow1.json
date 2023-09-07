@@ -33,6 +33,12 @@
 				},
 				{
 					"name": "Rottentomatos"
+				},
+				{
+					"name": "WorldwideGross"
+				},
+				{
+					"name": "derivedColumn1"
 				}
 			],
 			"scriptLines": [
@@ -60,6 +66,8 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> SELECTspecificcolumns",
 				"Onlycomedy filter(toFloat({Rotten Tomatoes %}) > 75) ~> Rottentomatos",
+				"moviesdatasource filter(toFloat(replace({Worldwide Gross}, '$', '')) > 50) ~> WorldwideGross",
+				"WorldwideGross derive() ~> derivedColumn1",
 				"SELECTspecificcolumns sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     umask: 0022,",
